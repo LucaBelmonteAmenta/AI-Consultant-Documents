@@ -1,12 +1,16 @@
 import streamlit as st
+from frontend.configuration import ConfigurationUI
+from backend.main_controller import Controller
 
 
 def response_generator(word):
+    if Controller().name_llm is not None:
+        print(Controller().name_llm)
     yield word + "xxx"
 
 
-def chat():
-
+def ChatUI():
+            
     container_chat = st.container(border=True, height=500)
 
     # Initialize chat history
@@ -37,6 +41,6 @@ def chat():
 
 
 if __name__ == "__main__":
-    chat()
+    ChatUI()
 
 

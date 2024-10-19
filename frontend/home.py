@@ -4,12 +4,16 @@ from time import sleep
 
 import streamlit as st
 
-from frontend.chat import chat
-from frontend.configuration import configuration
+from frontend.chat import ChatUI
+from frontend.configuration import ConfigurationUI
 from frontend.database_explorer import database_explorer
 
-from backend.embedding_models import EmbeddingModelsManager
+from backend.main_controller import Controller
+from backend.embedding_models import EmbeddingModelsManager, get_list_of_installed_embedding_names_models
 from backend.vector_database import VectorDatabaseManager
+
+
+
 
 
 
@@ -17,14 +21,34 @@ class Home():
 
     def __init__(self) -> None:
 
-        global init
-        if init:
+        if not Controller().init:
+
+            st.set_page_config(
+                page_title="AI Consultant Documents",
+                page_icon="🤖",
+                layout="centered",
+                initial_sidebar_state="collapsed",
+                menu_items={
+                    'Get Help': 'https://www.google.com/',
+                    'Report a bug': "https://www.google.com/",
+                    'About': "# This is a header. This is an *extremely* cool app!"
+                }
+            )
             
+            self.set_up_system()
+ 
+            Controller().init = True
+
+
+    def set_up_system(self):
+        
+        with st.empty():
+
             with st.status("Setting up system...", expanded=True) as status:
                 
                 sleep(4)
                 st.write("Checking for the existence of installed embedding models")
-                list_embedding_models = EmbeddingModelsManager.get_list_of_installed_embedding_names_models()
+                list_embedding_models = get_list_of_installed_embedding_names_models()
                 number_of_embedding_models = len(list_embedding_models)
 
                 if (number_of_embedding_models > 0):
@@ -41,12 +65,6 @@ class Home():
                     label="System setup completed!", state="complete", expanded=False
                 )
 
-                init = False
-
-            st.empty()
-
-        
-
 
     @st.dialog("Error")
     def popup_error(self, error:str):
@@ -61,13 +79,13 @@ class Home():
             tab1, tab2, tab3 = st.tabs(["▶️ Chat", "🗂️ Base de Datos", "⚙️ Configuración"])
             with tab1:
                 st.header("Chat con inteligencia artificial")
-                chat()
+                ChatUI()
             with tab2:
                 st.header("Base de datos vectorial")
                 database_explorer()
             with tab3:
                 st.header("Configuración")
-                configuration()
+                ConfigurationUI()
         except Exception as error:
             self.popup_error(str(error))
 
