@@ -1,5 +1,3 @@
-from config import init
-
 from time import sleep
 
 import streamlit as st
@@ -8,7 +6,7 @@ from frontend.chat import ChatUI
 from frontend.configuration import ConfigurationUI
 from frontend.database_explorer import database_explorer
 
-from backend.main_controller import Controller
+from backend.consultant_controller import ConsultantController as Controller
 from backend.embedding_models import EmbeddingModelsManager, get_list_of_installed_embedding_names_models
 from backend.vector_database import VectorDatabaseManager
 
@@ -21,22 +19,25 @@ class Home():
 
     def __init__(self) -> None:
 
+        # Initialize a session state variable that tracks the sidebar state (either 'expanded' or 'collapsed').
+        if 'sidebar_state' not in st.session_state:
+            st.session_state.sidebar_state = 'collapsed'
+
+        st.set_page_config(
+            page_title="AI Consultant Documents",
+            page_icon="🤖",
+            layout="centered",
+            initial_sidebar_state=st.session_state.sidebar_state,
+            menu_items={
+                'Get Help': 'https://www.google.com/',
+                'Report a bug': "https://www.google.com/",
+                'About': "# This is a header. This is an *extremely* cool app!"
+            }
+        )
+
         if not Controller().init:
 
-            st.set_page_config(
-                page_title="AI Consultant Documents",
-                page_icon="🤖",
-                layout="centered",
-                initial_sidebar_state="collapsed",
-                menu_items={
-                    'Get Help': 'https://www.google.com/',
-                    'Report a bug': "https://www.google.com/",
-                    'About': "# This is a header. This is an *extremely* cool app!"
-                }
-            )
-            
             self.set_up_system()
- 
             Controller().init = True
 
 
@@ -75,7 +76,7 @@ class Home():
 
     def run(self):
 
-        try:
+        #try:
             tab1, tab2, tab3 = st.tabs(["▶️ Chat", "🗂️ Base de Datos", "⚙️ Configuración"])
             with tab1:
                 st.header("Chat con inteligencia artificial")
@@ -86,6 +87,7 @@ class Home():
             with tab3:
                 st.header("Configuración")
                 ConfigurationUI()
-        except Exception as error:
-            self.popup_error(str(error))
+         #except Exception as error:
+             #self.popup_error(str(error))
+             #print(error)
 

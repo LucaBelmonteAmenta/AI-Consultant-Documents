@@ -4,18 +4,19 @@ import pandas as pd
 
 
 
-HEIGHT = 800
 
 
 def database_explorer():
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns((1, 2))
 
     with col1:
-        pass
+        container_1 = st.container(border=True)
+        container_1.write("hola")
 
     with col2:
-        container_chat = st.container(border=True, height=HEIGHT)
+        container_2 = st.container(border=True)
+        container_2.write("hola")
 
 
 
