@@ -8,7 +8,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 LLM_GOOGLE = ["gemini-1.5-pro-exp-0801",
-              "gemini-1.5-flash",
+              "gemini-1.5-flash-002",
               "gemini-1.5-pro",
               "gemini-1.5-pro-002",
               "gemini-1.5-flash-8b"]
@@ -23,15 +23,17 @@ LLM_OLLAMA = ["llama3.2",
               "gemma2",
               "mistral-nemo"]
 
+PAID_SERVICE = ("Gemini Developer API", "OpenAI API")
+
+
 
 
 class LargeLanguageModelsManager():
 
     @staticmethod
-    def get_google_model(self, 
-                         api_key:str, 
+    def get_google_model(api_key:str, 
                          name_model:str=LLM_GOOGLE[0], 
-                         temperature:int=0.0) -> ChatGoogleGenerativeAI:
+                         temperature:float = 1.0) -> ChatGoogleGenerativeAI:
         
         return ChatGoogleGenerativeAI(model=name_model,
                                       temperature=temperature,
@@ -42,10 +44,9 @@ class LargeLanguageModelsManager():
     
 
     @staticmethod
-    def get_openai_model(self, 
-                         api_key:str, 
+    def get_openai_model(api_key:str, 
                          name_model:str=LLM_OPENAI[0], 
-                         temperature:int=0.0) -> OpenAI:
+                         temperature:float = 1.0) -> OpenAI:
         
         return  OpenAI(model=name_model,
                        temperature=temperature,
@@ -56,9 +57,8 @@ class LargeLanguageModelsManager():
     
 
     @staticmethod
-    def get_ollama_model(self, 
-                         name_model:str=LLM_OLLAMA[0], 
-                         temperature:int=0) -> OllamaLLM:
+    def get_ollama_model(name_model:str=LLM_OLLAMA[0], 
+                         temperature:float = 1.0) -> OllamaLLM:
         
         return  OllamaLLM(model=name_model,
                           temperature=temperature,

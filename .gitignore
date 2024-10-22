@@ -163,3 +163,4 @@ cython_debug/
 /embedding_models
 /database
 /data
+test.py

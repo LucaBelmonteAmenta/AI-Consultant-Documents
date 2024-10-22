@@ -1,3 +1,5 @@
+description_function_keywords = "It receives the list of keywords necessary to increase the precision of the searches of the RAG (Retrieval-augmented generation) sub-system, registers this list in the system and returns the same list but changing its format so that it is compatible with the subsequent sub-systems of the process chain that make up the virtual assistant. The list received must have a minimum of 8 elements (more if necessary), which will be in the same language as the query itself."
+      
 
 
 system_prompt_query_responder = """
@@ -10,6 +12,7 @@ The documentation provided by the RAG system to answer your next query is as fol
 {context}
 
 """
+
 
 
 system_prompt_chat = """
@@ -40,6 +43,7 @@ Question: {input}
 Thought: {agent_scratchpad}
 
 """
+
 
 
 system_prompt_LLM_keywords = """

@@ -1,5 +1,5 @@
 import os
-from typing import Union, Optional, List
+from typing import Optional, List
 
 from langchain_core.embeddings.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -58,18 +58,21 @@ class EmbeddingModelsManager():
         for model_name in self.list_models_names:
             self.get_huggingface_embedding_model(model_name)
 
+
   def get_huggingface_embedding_model(self,
                                       model_name:Optional[str] = None,
                                       multi_process: bool = False,
                                       show_progress: bool = True) -> Embeddings:
 
     model_name = self.main_model_name if model_name is None else model_name
+    model_name = model_name.replace("--", "/")
 
     self.main_model = HuggingFaceEmbeddings(model_name = model_name,
                                             model_kwargs = {"trust_remote_code": True},
                                             cache_folder = self.path_models,
                                             multi_process = multi_process,
                                             show_progress = show_progress)
+    
     return self.main_model
 
 
@@ -90,3 +93,4 @@ class EmbeddingModelsManager():
     else:
       self.main_model = GoogleGenerativeAIEmbeddings(model=model_name)
       return self.main_model
+    

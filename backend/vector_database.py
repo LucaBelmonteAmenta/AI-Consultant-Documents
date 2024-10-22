@@ -1,5 +1,6 @@
 from typing import Sequence, Optional, List
 
+from langchain_core.embeddings.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
@@ -18,7 +19,7 @@ PATH_DATABASE = "./database"
 class VectorDatabaseManager():
 
   def __init__(self,
-               embeddings_model_langchain:HuggingFaceEmbeddings|GoogleGenerativeAIEmbeddings,
+               embeddings_model_langchain:Embeddings,
                path_database:str=PATH_DATABASE) -> None:
 
     if (type(embeddings_model_langchain) is HuggingFaceEmbeddings):
@@ -126,4 +127,6 @@ class VectorDatabaseManager():
 
 
 
+if __name__ == '__main__':
+  pass
 
