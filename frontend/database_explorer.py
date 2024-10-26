@@ -6,7 +6,7 @@ import pandas as pd
 
 
 
-def database_explorer():
+def DatabaseExplorerUI():
 
     col1, col2 = st.columns((1, 2))
 
@@ -25,6 +25,6 @@ def database_explorer():
     
 
 if __name__ == "__main__":
-    database_explorer()
+    DatabaseExplorerUI()
 
 

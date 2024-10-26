@@ -1,10 +1,13 @@
 from time import sleep
+from typing import Tuple
 
 import streamlit as st
 
 from frontend.chat import ChatUI
 from frontend.configuration import ConfigurationUI
-from frontend.database_explorer import database_explorer
+from frontend.database_explorer import DatabaseExplorerUI
+from frontend.fqa_and_help import FrequentlyAskedQuestionsUI
+
 
 from backend.consultant_controller import ConsultantController as Controller
 from backend.embedding_models import EmbeddingModelsManager, get_list_of_installed_embedding_names_models
@@ -23,28 +26,33 @@ class Home():
         if 'sidebar_state' not in st.session_state:
             st.session_state.sidebar_state = 'collapsed'
 
+        controller = Controller()
+
         st.set_page_config(
             page_title="AI Consultant Documents",
             page_icon="🤖",
             layout="centered",
             initial_sidebar_state=st.session_state.sidebar_state,
             menu_items={
-                'Get Help': 'https://www.google.com/',
-                'Report a bug': "https://www.google.com/",
+                'Get Help': 'https://aistudio.google.com/',
+                'Report a bug': 'https://openai.com/index/openai-api/',
                 'About': "# This is a header. This is an *extremely* cool app!"
             }
         )
 
-        if not Controller().init:
+        if not controller.init:
+            embedding_manager, database_manager = self.set_up_system()
+            controller.embedding_manager = embedding_manager
+            controller.database_manager = database_manager
+            controller.init = True
 
-            self.set_up_system()
-            Controller().init = True
 
-
-    def set_up_system(self):
+    def set_up_system(self) -> Tuple[EmbeddingModelsManager, VectorDatabaseManager]:
         
-        with st.empty():
+        placeholder = st.empty()
 
+        with placeholder:
+            
             with st.status("Setting up system...", expanded=True) as status:
                 
                 sleep(4)
@@ -60,11 +68,17 @@ class Home():
                     embedding_models_manager = EmbeddingModelsManager(setup_local_models=True)
 
                 st.write("Building vector database")
-                VectorDatabaseManager(embedding_models_manager.main_model)
-
+                database_manager = VectorDatabaseManager(embedding_models_manager.main_model)
+                
                 status.update(
                     label="System setup completed!", state="complete", expanded=False
                 )
+        
+        sleep(5)
+
+        placeholder.empty()
+
+        return (embedding_models_manager, database_manager)
 
 
     @st.dialog("Error")
@@ -77,16 +91,21 @@ class Home():
     def run(self):
 
         #try:
-            tab1, tab2, tab3 = st.tabs(["▶️ Chat", "🗂️ Base de Datos", "⚙️ Configuración"])
+        
+            tab1, tab2, tab3, tab4 = st.tabs(["▶️ Chat", "🗂️ Base de Datos", "⚙️ Configuración", "❔ Ayuda"])
             with tab1:
                 st.header("Chat con inteligencia artificial")
                 ChatUI()
             with tab2:
                 st.header("Base de datos vectorial")
-                database_explorer()
+                DatabaseExplorerUI()
             with tab3:
                 st.header("Configuración")
                 ConfigurationUI()
+            with tab4:
+                st.header("Preguntas frecuentes")
+                FrequentlyAskedQuestionsUI()
+                
          #except Exception as error:
              #self.popup_error(str(error))
              #print(error)
