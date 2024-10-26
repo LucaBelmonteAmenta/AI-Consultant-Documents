@@ -164,3 +164,4 @@ cython_debug/
 /database
 /data
 test.py
+/rerank_models
