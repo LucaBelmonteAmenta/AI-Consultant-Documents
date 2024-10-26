@@ -7,7 +7,6 @@ from backend.consultant_controller import ConsultantController as Controller
 MINIMUM_CHARACTERS_PER_QUERY = 8
 
 
-
 def show_information_source_fragments(context_docs:List[Document], keywords:str):
     
     sidebar_documents = st.sidebar
@@ -32,16 +31,10 @@ def show_information_source_fragments(context_docs:List[Document], keywords:str)
         st.session_state.sidebar_state = 'expanded'
 
 
-
-
 def response_generator(query:str):
-    if (len(query.strip()) > MINIMUM_CHARACTERS_PER_QUERY):
-        response = Controller().answer_query(query)
-        return response
-    else:
-        return None
-    
-
+    response = Controller().answer_query(query)
+    return response
+     
 
 def dynamic_printing(word):
     yield word
@@ -54,9 +47,8 @@ def set_button_information_source_fragments(context_docs, keywords, key_button):
               args = [context_docs, keywords])
 
 
-
-def ChatUI():
-            
+def chat_node():
+    
     container_chat = st.container(border=True, height=500)
 
     # Initialize chat history
@@ -81,6 +73,14 @@ def ChatUI():
     # Accept user input
     if prompt := st.chat_input("Que desea consultar?"):
 
+        if (len(prompt.strip()) <= MINIMUM_CHARACTERS_PER_QUERY):
+            st.error(f'Error: la consulta debe tener un mínimo de {MINIMUM_CHARACTERS_PER_QUERY} caracteres.  ', icon="🚨")
+            return None
+    
+        if not Controller().is_system_configured():
+            st.error('Error: el sistema aun no se encuentra preparado para realizar la consulta. \nPor favor revise si se configuraron los recursos pertinentes.', icon="🚨")
+            return None
+
         message_user = {"role": "user", 
                         "content": prompt,
                         "id": len(st.session_state.messages)}
@@ -102,7 +102,6 @@ def ChatUI():
                 set_button_information_source_fragments(response["context_docs"], 
                                                         response["keywords"], key)
             
-
         # Add assistant response to chat history
         message_assistant = {"role": "assistant", 
                              "content": response, 
@@ -110,11 +109,30 @@ def ChatUI():
         st.session_state.messages.append(message_assistant)
 
 
-    expander_advanced_options = st.expander(label="Opciones Avanzadas")
-    with expander_advanced_options:
-        'XXXXXXXXXXXXXXXXXXXXX'
-        clicked = st.button('Nada')
+def advanced_options_node():
 
+    with st.expander(label="Opciones Avanzadas"):
+
+        enter_keywords_manually = Controller().enter_keywords_manually = st.toggle("Introducir manualmente las palabras clave para la búsqueda del proceso de RAG")
+        if (enter_keywords_manually):
+            Controller().keywords = st.text_input(label="Introduzca la lista de palabras clave (separadas por una coma) para la búsqueda del RAG: ")
+
+        Controller().optimized_database_query_enabled = st.toggle("Habilitar optimización del RAG por medio de Reranking (puede aumentar el tiempo de respuesta)")
+
+        collection_filter = st.toggle("Filtrar la búsqueda del proceso de RAG por las colecciones de la base de datos")
+        if collection_filter:
+            collection_names_list = [collection.name for collection in Controller().database_manager.get_list_collections()]
+            st.selectbox(label="Seleccione la colección por la que desea filtrar la búsqueda:",
+                                                  options=collection_names_list)
+                
+        Controller().k_index = st.number_input(label="Introduzca el indice K: ", 
+                                               max_value=10, min_value=1, value=3)
+
+
+def ChatUI():
+    chat_node()
+    advanced_options_node()
+            
 
 if __name__ == "__main__":
     ChatUI()
