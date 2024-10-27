@@ -27,8 +27,9 @@ def ConfigurationUI():
                                                     options=lists_llm.keys())
     controller.name_llm = container_llm.selectbox(label="Seleccione LLM a emplear: ",
                                                   options=lists_llm[controller.llm_origin])
-    controller.service_token = container_llm.text_input(label="Seleccione el token o clave de acceso al LLM (si es que seleccionó un servicio pago como fuente): ",
-                                                        disabled=(controller.llm_origin not in PAID_SERVICE))
+    controller.service_token = container_llm.text_input(label="Ingrese el token o clave de acceso al LLM (si es que seleccionó un servicio pago como fuente): ",
+                                                        disabled=(controller.llm_origin not in PAID_SERVICE),
+                                                        type='password')
 
     
 
