@@ -2,6 +2,7 @@ from typing import List
 import streamlit as st
 from langchain_core.documents import Document
 from backend.consultant_controller import ConsultantController as Controller
+from backend.llm_access import LLM_WITHOUT_FUCTION_CALLING
 
 
 MINIMUM_CHARACTERS_PER_QUERY = 8
@@ -76,10 +77,16 @@ def chat_node():
         if (len(prompt.strip()) <= MINIMUM_CHARACTERS_PER_QUERY):
             st.error(f'Error: la consulta debe tener un mínimo de {MINIMUM_CHARACTERS_PER_QUERY} caracteres.  ', icon="🚨")
             return None
-    
+        
+        if (Controller().name_llm in LLM_WITHOUT_FUCTION_CALLING) and (not Controller().enter_keywords_manually):
+            st.error('Error: El LLM seleccionado para la consulta carece de la capacidad de “function calling”, siendo esta necesaria para la generación automática de palabras clave (para el proceso de búsqueda del RAG). \nPor favor cambie de LLM o ingrese las palabras clave del RAG manualmente.', icon="🚨")
+            return None
+
         if not Controller().is_system_configured():
             st.error('Error: el sistema aun no se encuentra preparado para realizar la consulta. \nPor favor revise si se configuraron los recursos pertinentes.', icon="🚨")
             return None
+        
+
 
         message_user = {"role": "user", 
                         "content": prompt,

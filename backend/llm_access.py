@@ -25,7 +25,7 @@ LLM_OLLAMA = ["llama3.2",
 
 PAID_SERVICE = ("Gemini Developer API", "OpenAI API")
 
-
+LLM_WITHOUT_FUCTION_CALLING = ["gemini-1.5-flash-8b", ]
 
 
 class LargeLanguageModelsManager():

@@ -26,7 +26,7 @@ from backend.system_prompts import (system_prompt_LLM_keywords,
 from backend.document_loader import DocumentLoaderManager, DocumentSplitter
 from backend.embedding_models import EmbeddingModelsManager, HUGGINGFACE_EMBEDDING_MODELS
 from backend.vector_database import VectorDatabaseManager
-from backend.llm_access import LargeLanguageModelsManager, PAID_SERVICE
+from backend.llm_access import LargeLanguageModelsManager, PAID_SERVICE, LLM_WITHOUT_FUCTION_CALLING
 from backend.sigleton_meta import SingletonMeta
 
 
@@ -120,9 +120,10 @@ class ConsultantController(metaclass=SingletonMeta):
   def is_system_configured(self) -> bool:
     llm_conditions_1 = (self.llm_origin in PAID_SERVICE) and (self.service_token is not None) 
     llm_conditions_2 = (self.temperature is not None) and (self.name_llm is not None)
+    llm_conditions_3 = self.enter_keywords_manually if self.name_llm in LLM_WITHOUT_FUCTION_CALLING else True
     embedding_conditions = (self.embedding_manager is not None) and (self.name_embedding_model is not None) 
     database_conditions = (self.database_manager is not None) and (len(self.database_manager.get_list_collections()) > 0)
-    required_parameters = [self.init, llm_conditions_1, llm_conditions_2, embedding_conditions, database_conditions]
+    required_parameters = [self.init, llm_conditions_1, llm_conditions_2, llm_conditions_3, embedding_conditions, database_conditions]
     return all(required_parameters)
   
   
