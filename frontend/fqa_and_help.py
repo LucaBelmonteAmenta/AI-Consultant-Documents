@@ -24,16 +24,24 @@ A diferencia de los modelos puramente generativos, un RAG mejora la precisión y
 
 function_calling_explanation_text = """
 Function Calling: es una capacidad de ciertos modelos de lenguaje (LLM) que permite invocar funciones específicas de un sistema o aplicación a partir de comandos en lenguaje natural. Mediante esta funcionalidad, el modelo no solo genera texto, sino que identifica cuándo es necesario ejecutar una función externa (como consultar una base de datos, realizar cálculos o integrar con APIs) y pasa los parámetros adecuados para su ejecución.
+
 Esto permite interacciones más dinámicas y precisas, ya que el modelo puede delegar tareas a funciones que manejan datos en tiempo real o realizar acciones en sistemas externos. Function Calling se usa ampliamente en aplicaciones de asistentes virtuales, chatbots avanzados y automatización de procesos, mejorando tanto la capacidad de respuesta como la personalización en las interacciones con el usuario.
 """
 
+temperature_explanation_text = """
+Temperatura: es un parámetro que ajusta el nivel de aleatoriedad en las respuestas generadas. Con valores bajos de temperatura (por ejemplo, 0.2), el modelo tiende a dar respuestas más predecibles y coherentes, enfocándose en términos y estructuras comunes. En cambio, valores altos (por ejemplo, 0.8 o más) hacen que el modelo genere respuestas más variadas y creativas, introduciendo mayor aleatoriedad en las palabras seleccionadas.
 
+En términos prácticos, la temperatura se ajusta según el propósito de la tarea: para aplicaciones que requieren precisión o formalidad, una temperatura baja es ideal; para tareas creativas o donde se buscan respuestas variadas, es preferible una temperatura más alta.
+"""
 
 
 def FrequentlyAskedQuestionsUI():
     
     with st.expander("Que significa LLM?"):
         st.write(llm_explanation_text)
+
+    with st.expander("Que significa la temperatura? (en el contexto de un LLM)"):
+        st.write(temperature_explanation_text)
 
     with st.expander("Que significa RAG?"):
         st.write(rag_explanation_text)
